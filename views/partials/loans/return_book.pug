@@ -3,6 +3,7 @@ extends ../../layout
 block content
   each loan in loans
     h1 Patron: Return Book
+    include ../_error
     p 
       strong Book Title:
       |  #{book.title}

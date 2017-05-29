@@ -104,17 +104,20 @@ router.put('/:id', function(req, res, nex) {
 	Books.findById(req.params.id).then(function(book) {	
 		return book.update(req.body);
 	}).then(function(book) {
-		res.redirect('/books/' + book.id);
+		res.redirect('/books/');
 	}).catch(function(error) {
 		if(error.name === "SequelizeValidationError") {
-	  		Loans.findAll({include: {model: Patrons}, where: {book_id: req.params.id}}).then(function(loans) {
-	  			res.render("partials/books/book_detail", {book: book, loans: loans});
+	  		Loans.findAll({include: [{model: Books}, {model: Patrons}], where: {book_id: req.params.id}}).then(function(loans) {
+	  			req.body.id = req.params.id;
+	  			res.render("partials/books/book_detail", {book: req.body, loans: loans, errors: error.errors});
+	  		}).catch(function(error) {
+	  			res.send(500, error);
 	  		});	
 	    } else {
-	        throw error;
+	        throw err;
 	    }
 	}).catch(function(error){
-	      	res.send(500, error);
+	    res.send(500, error);
 	});
 });
 

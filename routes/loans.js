@@ -83,10 +83,10 @@ router.get('/checked', function(req, res, next) {
 
 //GET return book by book ID
 router.get('/:id', function(req, res, next) {
-    Books.findById(req.params.id).then(function(book) {
-      Loans.findAll({include: {model: Patrons}, where: {book_id: req.params.id}}).then(function(loans) {
-        res.render("partials/loans/return_book", {book: book, loans: loans, returned_on: moment().format('YYYY-MM-DD')});
-      });
+  Books.findById(req.params.id).then(function(book) {
+    Loans.findAll({include: [{model: Patrons}], where: {book_id: req.params.id}}).then(function(loans) {
+      res.render("partials/loans/return_book", {book: book, loans: loans, returned_on: moment().format('YYYY-MM-DD')});
+    });
   }).catch(function(error){
       res.send(500, error);
   });
@@ -99,9 +99,20 @@ router.put('/:id', function(req, res, nex) {
   }).then(function() {
     res.redirect('/loans');
   }).catch(function(error){
-    res.send(500, error);
+    if(error.name === "SequelizeValidationError") {
+      Books.findById(req.params.id).then(function(book) {
+        Loans.findAll({include: [{model: Patrons}], where: {book_id: req.params.id}}).then(function(loans) {
+          res.render("partials/loans/return_book", {book: book, loans: loans, returned_on: moment().format('YYYY-MM-DD'), errors: error.errors});
+        });
+      }).catch(function(error) {
+        res.send(500, error);
+      }); 
+    } else {
+        throw err;
+    }
+  }).catch(function(error){
+      res.send(500, error);
   });
 });
-
 
 module.exports = router;
