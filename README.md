@@ -31,7 +31,11 @@ http://localhost:3000
 You can press `Ctrl-C` to stop the Node.js application 
 
 ## Images In ReadMes
-![](mock/images/Screen%20Shot1.png)
+### Main Page
 ![](mock/images/Screen%20Shot2.png)
+### Books List
+![](mock/images/Screen%20Shot1.png)
+### Patrons List
 ![](mock/images/Screen%20Shot3.png)
+### Loans List
 ![](mock/images/Screen%20Shot4.png)
